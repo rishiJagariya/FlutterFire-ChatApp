@@ -80,32 +80,42 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                               child: InkWell(
                                 splashColor:
-                                    Theme.of(context).colorScheme.primary,
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChatDetailed(
-                                      userData: _user,
+                                Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary,
+                                onTap: () =>
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ChatDetailed(
+                                              userData: _user,
+                                            ),
+                                      ),
                                     ),
-                                  ),
-                                ),
                                 child: Container(
                                   margin: EdgeInsets.all(10.0),
                                   height:
-                                      MediaQuery.of(context).size.height * 0.08,
+                                  MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.08,
                                   child: Center(
                                     child: Row(
                                       children: [
                                         Hero(
                                           tag: _user['photo'].toString(),
                                           child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                                            width: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width *
                                                 0.15,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                                            height: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width *
                                                 0.15,
                                             decoration: new BoxDecoration(
                                               shape: BoxShape.circle,
@@ -119,15 +129,17 @@ class _ChatScreenState extends State<ChatScreen> {
                                           ),
                                         ),
                                         SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width *
                                               0.02,
                                         ),
                                         SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width *
                                               0.43,
                                           child: Text(
                                             _user['name'].toString(),
@@ -138,9 +150,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                           ),
                                         ),
                                         SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width *
                                               0.3,
                                           child: Align(
                                             alignment: Alignment.centerRight,
@@ -151,9 +164,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ],
                                     ),
                                   ),
-                                ),
+                                ), // This Container have single USer chat
                               ),
-                            );
+                            ); // card for USERS list with on pressed function (comment by RJ)
                           }
                           return Card(
                             margin: EdgeInsets.all(8.0),
@@ -163,38 +176,54 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                             child: Container(
                               margin: EdgeInsets.all(10.0),
-                              height: MediaQuery.of(context).size.height * 0.08,
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.08,
                               child: Center(
                                 child: CircularProgressIndicator(
                                   valueColor: new AlwaysStoppedAnimation(
-                                    Theme.of(context).colorScheme.primary,
+                                    Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                               ),
                             ),
-                          );
+                          ); //Loading Animation into Chat Container (comment by RJ)
                         },
                       );
                     },
                   );
-                }
-                return Center(
-                  child: CircularProgressIndicator(
-                    valueColor: new AlwaysStoppedAnimation(
-                      Theme.of(context).colorScheme.primary,
+                } else {
+                  print('Into Exit 1');
+                  return Center(
+                    child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation(
+                        Theme
+                            .of(context)
+                            .colorScheme
+                            .primary,
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
             );
-          }
-          return Center(
-            child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation(
-                Theme.of(context).colorScheme.primary,
+          }else {
+            print('into Exit 0');
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation(
+                  Theme
+                      .of(context)
+                      .colorScheme
+                      .primary,
+                ),
               ),
-            ),
-          );
+            );
+          }
         },
       ),
     );

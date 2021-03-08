@@ -93,10 +93,12 @@ class DatabaseHelper {
     }
   }
 
-  uploadImage(File _image, String to, String from) {
+  uploadImage(File _image, String to, String from) async {
     String filePath =
         'chatImages/${generateChatId(to, from)}/${DateTime.now()}.png';
     _uploadTask = _firebaseStorage.ref().child(filePath).putFile(_image);
+    await _uploadTask.onComplete;
+    print('File Uploaded');
     return _uploadTask;
   }
 
