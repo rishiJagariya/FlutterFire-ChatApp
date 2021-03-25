@@ -15,6 +15,27 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Center(
+              child: Column(
+                children: [
+                  TextField(
+                    
+                    decoration: new InputDecoration(
+                      hintText: "Email",
+                    ),
+                  ),
+                  TextField(
+                    decoration: new InputDecoration(
+                      hintText: "Password",
+                    ),
+                  ),
+                  MaterialButton(
+                    onPressed: () => {},
+                  ),
+
+                ],
+              ),
+            ),
             SignInButtonBuilder(
               key: ValueKey("Google"),
               text: 'Sign in with Google',

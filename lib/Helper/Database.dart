@@ -23,11 +23,14 @@ class DatabaseHelper {
   }
 
   getChats(String uid) {
-    return _db
+    //print('into get chats()');
+    var userChats =  _db
         .collection('chats')
         .where('members', arrayContains: uid)
         .orderBy('lastActive', descending: true)
         .snapshots();
+    //print(userChats);
+    return userChats;
   }
 
   generateChatId(String username1, String username2) {

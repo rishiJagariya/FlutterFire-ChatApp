@@ -46,14 +46,17 @@ class _ChatScreenState extends State<ChatScreen> {
         future: offlineStorage.getUserInfo(),
         builder: (BuildContext context, AsyncSnapshot userDataSnapshot) {
           if (userDataSnapshot.hasData) {
-            Map<dynamic, dynamic> user = userDataSnapshot.data;
+            Map<String, dynamic> user = userDataSnapshot.data;
             String myId = user['uid'];
+            if(myId == null)
+                return ChatScreen();
             return StreamBuilder(
               stream: dbHelper.getChats(myId),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   QuerySnapshot qSnap = snapshot.data;
                   List<DocumentSnapshot> docs = qSnap.docs;
+                  print(docs.length.toString() + ' this is number of chats');
                   if (docs.length == 0)
                     return Center(
                       child: Text('No Chats yet!'),
@@ -211,6 +214,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
               },
             );
+   
           }else {
             print('into Exit 0');
             return Center(
