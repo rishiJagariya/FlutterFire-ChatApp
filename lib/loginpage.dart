@@ -19,7 +19,6 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 children: [
                   TextField(
-                    
                     decoration: new InputDecoration(
                       hintText: "Email",
                     ),

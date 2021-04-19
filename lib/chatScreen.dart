@@ -331,7 +331,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           ),
                           filled: true,
-                          hintText: "Type in only Username",
+                          hintText: "Enter Email address",
                           hintStyle: TextStyle(fontSize: 16.0),
                         ),
                       ),
@@ -350,7 +350,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       color: Theme.of(context).colorScheme.secondary,
                       child: Text(
-                        'Let\'s chat with your friend.',
+                        'Let\'s Chat 💬',
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.onSecondary),
                       ),
@@ -359,7 +359,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           String username = userController.text.toString();
                           userController.clear();
                           QuerySnapshot doc = await dbHelper
-                              .getUserByEmail(username + '@gmail.com');
+                              .getUserByEmail(username);
                           if (doc.docs.length != 0) {
                             DocumentSnapshot user = doc.docs[0];
                             Map<String, dynamic> userData = user.data();
