@@ -3,7 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_chatapp/Helper/Constants.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:simple_rsa/simple_rsa.dart';
+
+import 'package:rsa_encrypt/rsa_encrypt.dart';
+//import 'package:simple_rsa/simple_rsa.dart';
+import 'package:firebase_chatapp/Helper/rsa_helper.dart';
+import 'package:pointycastle/api.dart' as crypto;
 
 class DatabaseHelper {
   FirebaseFirestore _db;
@@ -25,7 +29,7 @@ class DatabaseHelper {
 
   getChats(String uid) {
     //print('into get chats()');
-    var userChats =  _db
+    var userChats = _db
         .collection('chats')
         .where('members', arrayContains: uid)
         .orderBy('lastActive', descending: true)
@@ -56,69 +60,115 @@ class DatabaseHelper {
     FirebaseFirestore tempDb = FirebaseFirestore.instance;
     String chatId = generateChatId(from, to);
     Timestamp now = Timestamp.now();
-
-
-    //Rishi add this part for RSA
-    //final publicKey = await parseKeyFromFile<RSAPublicKey>('assets/test/public.pem');
-    
-    // final publicPem = await rootBundle.loadString('assets/test/public.pem');
-    // final publicKey = RSAKeyParser().parse(publicPem) as RSAPublicKey;
-
-    // final privKey = await parseKeyFromFile<RSAPrivateKey>('assets/test/private.pem');
-    // final encrypter = Encrypter(RSA(publicKey: publicKey, privateKey: privKey));
-
-    // final encrypted = encrypter.encrypt(msg);
-    // print(encrypted);
-
-    final PUBLIC_KEY =
-      "MIIBITANBgkqhkiG9w0BAQEFAAOCAQ4AMIIBCQKCAQBuAGGBgg9nuf6D2c5AIHc8" +
-          "vZ6KoVwd0imeFVYbpMdgv4yYi5obtB/VYqLryLsucZLFeko+q1fi871ZzGjFtYXY" +
-          "9Hh1Q5e10E5hwN1Tx6nIlIztrh5S9uV4uzAR47k2nng7hh6vuZ33kak2hY940RSL" +
-          "H5l9E5cKoUXuQNtrIKTS4kPZ5IOUSxZ5xfWBXWoldhe+Nk7VIxxL97Tk0BjM0fJ3" +
-          "8rBwv3++eAZxwZoLNmHx9wF92XKG+26I+gVGKKagyToU/xEjIqlpuZ90zesYdjV+" +
-          "u0iQjowgbzt3ASOnvJSpJu/oJ6XrWR3egPoTSx+HyX1dKv9+q7uLl6pXqGVVNs+/" +
-          "AgMBAAE=";
-
-    String encrypted = await encryptString(msg, PUBLIC_KEY);
-
+    DocumentReference keyRef0, keyRef1;
+    String encrypted0, encrypted1;
+    print('into send message function-------1------------>>>>>>>' + to + ">>>>>" + from + "<<<");
+    //Working here - pending
+    String from1 = from;
+    if (isText) {
+      if (to.toString().compareTo(from.toString()) < 0) {
+        keyRef0 = _db.collection('publickeys').doc(from1);
+        keyRef1 = _db.collection('publickeys').doc(to);
+        print('into send message function---------1.1----------->>>>>>>');
+      } else {
+        keyRef0 = _db.collection('publickeys').doc(to);
+        keyRef1 = _db.collection('publickeys').doc(from1);
+        print('into send message function---------1.2----------->>>>>>>');
+      }
+      //print('into send message function---------2---------->>>>>>>');
+      String pubkey0, pubkey1;
+      await keyRef0.get().then((doc) => {
+            if (doc.exists)
+              pubkey0 = doc.data()['key']
+            else
+              print("No such document!")
+          });
+      print('into send message function------------2-------->>>>>>>');
+      await keyRef1.get().then((doc) => {
+            if (doc.exists)
+              pubkey1 = doc.data()['key']
+            else
+              print("No such document!")
+          });
+      print('into send message function----------3---------->>>>>>>');
+      print(pubkey1); print("  -------   "); print(pubkey0);
+      //Rishi add this part for RSA
+      encrypted0 =
+          encrypt(msg, rsahelper.helper.parsePublicKeyFromPem(pubkey0));
+      encrypted1 =
+          encrypt(msg, rsahelper.helper.parsePublicKeyFromPem(pubkey1));
+    }
     // end of RSA part
+    print('into send message function----------4---------->>>>>>>');
     if (!existsOrNot) {
       List<String> members = [to, from];
-      isText
-          ? await tempDb
-              .collection('chats')
-              .doc(chatId)
-              .collection('messages')
-              .add(
-              {'from': from, 'message': encrypted, 'time': now, 'isText': true},
-            )
-          : await tempDb
-              .collection('chats')
-              .doc(chatId)
-              .collection('messages')
-              .add(
-              {'from': from, 'photo': path, 'time': now, 'isText': false},
-            );
+      if (isText == true) {
+        await tempDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages0')
+            .add(
+          {'from': from, 'message': encrypted0, 'time': now, 'isText': true},
+        );
+        await tempDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages1')
+            .add(
+          {'from': from, 'message': encrypted1, 'time': now, 'isText': true},
+        );
+      } else {
+        await tempDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages0')
+            .add(
+          {'from': from, 'photo': path, 'time': now, 'isText': false},
+        );
+        await tempDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages1')
+            .add(
+          {'from': from, 'photo': path, 'time': now, 'isText': false},
+        );
+      }
       await tempDb
           .collection('chats')
           .doc(chatId)
           .set({'lastActive': now, 'members': members});
     } else {
-      isText
-          ? await tempDb
-              .collection('chats')
-              .doc(chatId)
-              .collection('messages')
-              .add(
-              {'from': from, 'message': encrypted, 'time': now, 'isText': true},
-            )
-          : await tempDb
-              .collection('chats')
-              .doc(chatId)
-              .collection('messages')
-              .add(
-              {'from': from, 'photo': path, 'time': now, 'isText': false},
-            );
+      if (isText == true) {
+        await tempDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages0')
+            .add(
+          {'from': from, 'message': encrypted0, 'time': now, 'isText': true},
+        );
+        await tempDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages1')
+            .add(
+          {'from': from, 'message': encrypted1, 'time': now, 'isText': true},
+        );
+      } else {
+        await tempDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages0')
+            .add(
+          {'from': from, 'photo': path, 'time': now, 'isText': false},
+        );
+        await tempDb
+            .collection('chats')
+            .doc(chatId)
+            .collection('messages1')
+            .add(
+          {'from': from, 'photo': path, 'time': now, 'isText': false},
+        );
+      }
       await tempDb.collection('chats').doc(chatId).update({'lastActive': now});
     }
   }

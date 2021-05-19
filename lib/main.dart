@@ -66,6 +66,7 @@ class MyApp extends StatelessWidget {
 }
 
 Widget handleHomePage() {
+  print('into main.dart handle page');
   return StreamBuilder(
     stream: FirebaseAuth.instance.authStateChanges(),
     builder: (BuildContext context, snapshot) {
