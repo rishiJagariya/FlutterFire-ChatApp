@@ -8,12 +8,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rsa_encrypt/rsa_encrypt.dart';
-import 'package:firebase_chatapp/Helper/rsa_helper.dart';
 
 import 'Helper/Constants.dart';
 import 'Helper/Database.dart';
 import 'Helper/OfflineStore.dart';
-import 'package:simple_rsa/simple_rsa.dart';
 
 class ChatDetailed extends StatefulWidget {
   Map<String, dynamic> userData;
@@ -342,12 +340,11 @@ class _ChatDetailedState extends State<ChatDetailed> {
     //Rishi code RSA decryption using private keys  
     final encodedString = message.data()['message'].toString();
     
-
     //print(encodedString.length);
     //print(rsahelper.getPrivateKey(myId));
     String decrypted = decrypt(encodedString, await rsahelper.getPrivateKey(myId));
 
-    //print(decrypted + " <<--2-->>");
+    print(decrypted + " <<--2-->>");
 
     if (message.data()['isText'])
       return Align(

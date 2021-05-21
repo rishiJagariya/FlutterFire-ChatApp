@@ -14,6 +14,7 @@ class _ChatScreenState extends State<ChatScreen> {
   DatabaseHelper dbHelper;
   OfflineStorage offlineStorage;
   TextEditingController userController;
+  Color greenColor = Color(0xFF00AF19);
   final _scaffKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
             builder: (context) => _buildPopUpMessage(context),
           );
         },
-        splashColor: Theme.of(context).colorScheme.onSecondary,
+        splashColor: greenColor,
         child: Icon(
           Icons.add,
         ),
@@ -317,11 +318,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Center(
                   child: Align(
                     alignment: Alignment.center,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                      ),
-                      color: Theme.of(context).colorScheme.secondary,
+                    child: ElevatedButton(
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(18.0),
+                      // ),
+                      //color: Theme.of(context).colorScheme.secondary,
                       child: Text(
                         'Let\'s Chat 💬',
                         style: TextStyle(

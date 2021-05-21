@@ -1,7 +1,6 @@
 import 'package:rsa_encrypt/rsa_encrypt.dart';
 import 'package:pointycastle/api.dart' as crypto;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:firebase_chatapp/Helper/Database.dart';
 
 class RsaHelper{
 
@@ -21,12 +20,6 @@ class RsaHelper{
     
     this.pub = helper.encodePublicKeyToPemPKCS1(keyPair.publicKey);
     this.pri = helper.encodePrivateKeyToPemPKCS1(keyPair.privateKey);
-  
-
-    DatabaseHelper databaseHelper; 
-
-    //print('public key after PEM encoding : \n' + pub);
-    //print('\n private key after PEM encoding : \n' + pri);
   }
 
   storePrivateKey(String uid) async {
@@ -38,6 +31,7 @@ class RsaHelper{
   getPrivateKey(String uid) async {
     //print("into getprivate key");
     String rand = await storage.read(key: uid);
+    print(rand);
     return helper.parsePrivateKeyFromPem(rand);
     //return rand;
   }
